@@ -5,7 +5,7 @@
   
   if (empty($_POST) == false){
       
-      $result = email::send($to="jcamp@gmx.com",$subject="PHP wrapper for Blat",$body="If you get this, please reply that it works!");
+      $result = email::send($to="jcamp"."@"."gmx"."."."com",$subject="PHP wrapper for Blat",$body="If you get this, please reply that it works!");
       
       echo "<h2>Result</h2>";
       
