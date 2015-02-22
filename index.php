@@ -3,7 +3,7 @@
   require_once("email.php");
   echo "<form method='POST'><input type='submit' name='sendEmail' value='Send Email'></form>";
   
-  if (empty($_POST) == false){
+  if ($_SERVER['REQUEST_METHOD'] == 'POST'){
       
       $result = email::send($to="jcamp"."@"."gmx"."."."com",$subject="PHP wrapper for Blat",$body="If you get this, please reply that it works!");
       
