@@ -9,8 +9,7 @@
 // Requirements: PHP, Blat, stunnel (if your SMTP server uses SSL)
 // Windows only
 
-/*
-Blat v2.5.0 w/GSS encryption (build : Sep 14 2005 22:46:29)
+/*Blat v2.5.0 w/GSS encryption (build : Sep 14 2005 22:46:29)
 
 Win32 console utility to send mail via SMTP or post to usenet via NNTP
 by P.Mendes,M.Neal,G.Vollant,T.Charron,T.Musson,H.Pesonen,A.Donchey,C.Hyde
@@ -174,21 +173,35 @@ default sender address.
 */
   
   class email{
-      //blat -server [localhost:1099] -u [username@yourdomain.com] -pw [password] -to [emailAddressTo] -subject [subject] -body [messageBody] -f [username@yourdomain.com]
-      
-      static $path = "c:/xampp/htdocs/blat.exe";
+      //blat c:/xampp/htdocs/temp/randomTempBody.txt -server localhost:1099 -u yourEmail@yourDomain.ext -pw yourPasswordHere -to recipient@domain.ext -subject testing -f yourEmail@yourDomain.ext
+      static $path = "c:/xampp/htdocs/programs/blat/full/blat.exe";
       static $server = "localhost:1099"; //stunneled to smtp.zoho.com:465
-      static $user = "webserver@domain.com"; //recommendation is zoho.com, 10 free accounts @yourdomain
+      static $user = "yourEmail@yourDomain.ext";
       static $pass = "yourPasswordHere";
+      static $bodyTempPath = "c:/xampp/htdocs/temp/";
       
-      static function send($to,$subject,$body){
-          $arguments = array("server"=>self::$server,"u"=>self::$user,"pw"=>self::$pass,"to"=>$to,"subject"=>$subject,"body"=>$body,"f"=>self::$user);
-          $command = self::$path;
+      static function send($to,$subject,$body,$replyTo=null){
+          
+          self::$bodyTempPath .= md5(microtime(true)).".txt";
+          
+          file_put_contents(self::$bodyTempPath,$body);
+          
+          $arguments = array("server"=>self::$server,"u"=>self::$user,"pw"=>self::$pass,"to"=>$to,"subject"=>$subject,"f"=>self::$user);
+          
+          if ($replyTo != null){
+              unset($arguments["-f"]);
+              $arguments["replyto"] = $replyTo;
+              $arguments["from"] = self::$user;
+          }
+          
+          $command = self::$path." ".escapeshellarg(self::$bodyTempPath);
           
           foreach($arguments as $key => $value)
               $command .= " -".$key." ".escapeshellarg($value);
           
           exec($command, $output, $return_var);
+          unlink(self::$bodyTempPath);
+          //echo '<pre>'.print_r($output,true).'</pre>';
           return array("return_var"=>$return_var,"command"=>$command,"command_line_output"=>$output);
       }
       
