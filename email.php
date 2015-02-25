@@ -186,7 +186,7 @@ default sender address.
           
           file_put_contents(self::$bodyTempPath,$body);
           
-          $arguments = array("server"=>self::$server,"u"=>self::$user,"pw"=>self::$pass,"to"=>$to,"subject"=>$subject,"f"=>self::$user);
+          $arguments = array("server"=>self::$server,"u"=>self::$user,"pw"=>self::$pass,"to"=>$to,"subject"=>$subject,"f"=>self::$user,"-superDebugT"=>"");
           
           if ($replyTo != null){
               unset($arguments["-f"]);
